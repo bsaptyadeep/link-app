@@ -1,0 +1,1 @@
+export const emailValidationRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
