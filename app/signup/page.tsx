@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import UserService from "../api/user";
+import UserService from "../../lib/services/user";
 import { isValidEmail } from "@/lib/email.util";
 
 export default function SignupPage() {

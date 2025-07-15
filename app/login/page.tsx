@@ -18,7 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { isValidEmail } from "@/lib/email.util";
-import UserService from "../api/user";
+import UserService from "../../lib/services/user";
 
 export default function LoginPage() {
   const router = useRouter();

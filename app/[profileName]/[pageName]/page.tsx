@@ -2,7 +2,7 @@
 
 import type { Page } from "@/types/page";
 import { useEffect, useState } from "react";
-import ViewPageService from "../../api/viewPage";
+import ViewPageService from "../../../lib/services/viewPage";
 import { useParams } from "next/navigation";
 import { Template } from "@/types/template";
 import { DEFAULT_TEMPLATES } from "@/constants/templates";

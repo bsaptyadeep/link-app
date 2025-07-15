@@ -5,14 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Page } from "@/types/page";
 import { useEffect, useState } from "react";
-import PageService from "../api/page";
-import UserService from "../api/user";
+import PageService from "../../lib/services/page";
+import UserService from "../../lib/services/user";
 import { User } from "@/types/User";
 
 export default function DashboardPage() {
   const [activePages, setActivePages] = useState<Page[]>([]);
   const PageServiceInstance = PageService.getInstance();
-  const baseUrl = window.location.origin;
+  // const baseUrl = window.location.origin;
   const UserServiceInstance = UserService.getInstance();
   const [user, setUser] = useState<User|null>(null);
 
@@ -47,7 +47,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
-                <code className="rounded bg-muted px-2 py-1">{baseUrl}/{user?.profileName}/{page.name}</code>
+                {/* <code className="rounded bg-muted px-2 py-1">{baseUrl}/{user?.profileName}/{page.name}</code> */}
                 <Button variant="outline" size="sm">
                   Copy
                 </Button>

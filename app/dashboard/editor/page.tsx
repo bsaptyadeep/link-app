@@ -10,10 +10,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Template } from "@/types/template"
 import Loader from "@/components/ui/Loader"
 import { IPageLink } from "@/types/page"
-import PageService from '@/app/api/page';
+import PageService from '@/lib/services/page';
 import { DEFAULT_TEMPLATES } from '@/constants/templates';
 import { Spinner } from "@radix-ui/themes";
-import UserService from '@/app/api/user';
+import UserService from '@/lib/services/user';
 import { User } from '@/types/User';
 
 export default function EditorPage() {
