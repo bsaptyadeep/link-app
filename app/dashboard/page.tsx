@@ -8,17 +8,19 @@ import { useEffect, useState } from "react";
 import PageService from "../../lib/services/page";
 import UserService from "../../lib/services/user";
 import { User } from "@/types/User";
+import PageCard from "./components/PageCard/PageCard";
 
 export default function DashboardPage() {
   const [activePages, setActivePages] = useState<Page[]>([]);
   const PageServiceInstance = PageService.getInstance();
-  // const baseUrl = window.location.origin;
+  const [baseUrl, setBaseUrl] = useState('');
   const UserServiceInstance = UserService.getInstance();
   const [user, setUser] = useState<User|null>(null);
 
   useEffect(() => {
     const load = async () => {
       try {
+        setBaseUrl(window.location.origin);
         const pageRes = await PageServiceInstance.getPages();
         setActivePages(pageRes);
         const userRes = await UserServiceInstance.getUser();
@@ -38,34 +40,13 @@ export default function DashboardPage() {
       </div>
       <div className="grid gap-6 md:grid-cols-3">
         {activePages.map((page) => (
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                {page.name}
-              </CardTitle>
-              <CardDescription>{page.description}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-2">
-                {/* <code className="rounded bg-muted px-2 py-1">{baseUrl}/{user?.profileName}/{page.name}</code> */}
-                <Button variant="outline" size="sm">
-                  Copy
-                </Button>
-              </div>
-            </CardContent>
-            <CardFooter className="flex-row gap-3">
-              <Button asChild>
-                <Link href="/dashboard/editor">
-                  Edit <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button variant={"outline"} asChild>
-                <Link href={`/${page.name}`}>
-                  Open <Earth className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </CardFooter>
-          </Card>
+          <PageCard page={{
+            id: page.pageId.toString(),
+            title: page.name,
+            description: page.description,
+            url: `${baseUrl}/${user?.profileName}/${page.name}`,
+            isActive: true,
+          }} />
         ))}
       </div>
       <div className="grid gap-6 md:grid-cols-2">
