@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link";
-import { Earth, ArrowRight, Brush, LayoutTemplate } from "lucide-react";
+import { ArrowRight, Brush, LayoutTemplate } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Page } from "@/types/page";
@@ -9,17 +9,22 @@ import PageService from "../../lib/services/page";
 import UserService from "../../lib/services/user";
 import { User } from "@/types/User";
 import PageCard from "./components/PageCard/PageCard";
+import Loader from "@/components/ui/Loader"
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
+  const router = useRouter();
   const [activePages, setActivePages] = useState<Page[]>([]);
   const PageServiceInstance = PageService.getInstance();
   const [baseUrl, setBaseUrl] = useState('');
   const UserServiceInstance = UserService.getInstance();
   const [user, setUser] = useState<User|null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const load = async () => {
       try {
+        setIsLoading(true);
         setBaseUrl(window.location.origin);
         const pageRes = await PageServiceInstance.getPages();
         setActivePages(pageRes);
@@ -27,10 +32,27 @@ export default function DashboardPage() {
         setUser(userRes)
       } catch (error) {
         console.error("Error in fetchPages", error)
+      } finally {
+        setIsLoading(false);
       }
     }
     load();
   }, [])
+
+  const handleDeletePage = async (pageId: string) => {
+    try {
+      await PageServiceInstance.deletePage(pageId);
+      setActivePages((prevState) => {
+        return [...prevState.filter((page) => page.pageId.toString() !== pageId)]
+      })
+    } catch (error) {
+      console.error("Error in Deleting Page:", pageId);
+    }
+  }
+
+  const handleOpenPage = async (pageUrl: string) => {
+    router.push(pageUrl)
+  }
 
   return (
     <div className="flex flex-col gap-8 p-6">
@@ -38,19 +60,31 @@ export default function DashboardPage() {
         <h1 className="text-3xl font-bold">Welcome, John!</h1>
         <p className="text-muted-foreground">Manage your LinkHub profile and Active Pages</p>
       </div>
-      <div className="grid gap-6 md:grid-cols-3">
+      {
+        isLoading &&
+        <Loader text="Fetching page data..." />
+      }
+      {
+        activePages.length>0 &&
+        <div className="grid gap-6 md:grid-cols-3">
         {activePages.map((page) => (
           <PageCard page={{
             id: page.pageId.toString(),
             title: page.name,
             description: page.description,
-            url: `${baseUrl}/${user?.profileName}/${page.name}`,
+            baseUrl: baseUrl,
+            route: `/${user?.profileName}/${page.name}`,
             isActive: true,
-          }} />
+          }}
+          onDelete={handleDeletePage}
+          onOpen={handleOpenPage}
+           />
         ))}
-      </div>
+      </div>}
       <div className="grid gap-6 md:grid-cols-2">
-        <Card>
+        {/* <Card
+          className={`group hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 bg-white/80 backdrop-blur-sm border-0 shadow-lg overflow-hidden`}
+        >
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Brush className="h-5 w-5" />
@@ -64,14 +98,18 @@ export default function DashboardPage() {
             </p>
           </CardContent>
           <CardFooter>
-            <Button asChild>
+            <Button
+            className="gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-200"
+             asChild>
               <Link href="/dashboard/editor">
                 Go to Editor <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </CardFooter>
-        </Card>
-        <Card>
+        </Card> */}
+        <Card
+          className={`group hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 bg-white/80 backdrop-blur-sm border-0 shadow-lg overflow-hidden`}
+        >
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <LayoutTemplate className="h-5 w-5" />
@@ -85,7 +123,9 @@ export default function DashboardPage() {
             </p>
           </CardContent>
           <CardFooter>
-            <Button asChild>
+            <Button
+            className="gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-200"
+             asChild>
               <Link href="/dashboard/temp">
                 View Templates <ArrowRight className="ml-2 h-4 w-4" />
               </Link>

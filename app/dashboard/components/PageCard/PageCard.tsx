@@ -4,12 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Edit, ExternalLink, Copy, Eye, CheckCircle2, Trash2, Check } from "lucide-react"
 import { useState } from "react"
+import { Spinner } from "@radix-ui/themes"
 
 export interface PageItem {
   id: string
   title: string
   description: string
-  url: string
+  baseUrl: string,
+  route: string,
   isActive: boolean
   views?: number
   lastUpdated?: string
@@ -17,10 +19,10 @@ export interface PageItem {
 
 interface PageCardProps {
   page: PageItem
-  onEdit?: (pageId: string) => void
-  onOpen?: (pageId: string) => void
+  onEdit?: (pageId: string) => Promise<void>
+  onOpen?: (pageUrl: string) => Promise<void>
   onCopy?: (url: string, pageId: string) => void
-  onDelete?: (pageId: string) => void
+  onDelete?: (pageId: string) => Promise<void>
   isCopied?: boolean
   className?: string
 }
@@ -32,40 +34,40 @@ export default function PageCard({
   onDelete,
   className = "",
 }: PageCardProps) {
-  const [isCopied, setIsCopied] = useState(false)
-  const [copyError, setCopyError] = useState<string | null>(null)
+  const [isCopied, setIsCopied] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [isDeletingPage, setIsDeletingPage] = useState(false);
+  const pageUrl = `${page.baseUrl}${page.route}`;
 
   const handleEdit = () => {
     onEdit?.(page.id)
   }
 
   const handleOpen = () => {
-    onOpen?.(page.id)
+    onOpen?.(pageUrl)
   }
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(page.url)
+      await navigator.clipboard.writeText(pageUrl)
       setIsCopied(true)
-      setCopyError(null)
-
-      // Reset the copied state after 2 seconds
+      setError(null)
       setTimeout(() => {
         setIsCopied(false)
       }, 2000)
     } catch (err) {
       console.error("Failed to copy URL:", err)
-      setCopyError("Failed to copy")
-
-      // Clear error after 2 seconds
+      setError("Failed to copy")
       setTimeout(() => {
-        setCopyError(null)
+        setError(null)
       }, 2000)
     }
   }
 
-  const handleDelete = () => {
-    onDelete?.(page.id)
+  const handleDelete = async () => {
+    setIsDeletingPage(true);
+    await onDelete?.(page.id)
+    setIsDeletingPage(false);
   }
 
   return (
@@ -118,7 +120,7 @@ export default function PageCard({
       <CardContent className="relative space-y-4">
         {/* URL Display */}
         <div className="bg-gray-50/80 backdrop-blur-sm p-3 rounded-xl border border-gray-200/50 relative group/url">
-          <p className="text-sm text-gray-700 font-mono break-all pr-8">{page.url}</p>
+          <p className="text-sm text-gray-700 font-mono break-all pr-8">{pageUrl}</p>
           <Button
             onClick={handleCopy}
             variant="ghost"
@@ -130,7 +132,7 @@ export default function PageCard({
           </Button>
         </div>
 
-        {copyError && <p className="text-xs text-red-500 -mt-2">{copyError}</p>}
+        {error && <p className="text-xs text-red-500 -mt-2">{error}</p>}
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
@@ -149,14 +151,17 @@ export default function PageCard({
             <ExternalLink className="w-4 h-4" />
             <span className="hidden sm:inline">Open</span>
           </Button>
-          <Button
+          {
+            isDeletingPage ?
+            <Spinner />:
+            <Button
             onClick={handleDelete}
             variant="outline"
             size="icon"
             className="bg-white/80 backdrop-blur-sm border-gray-200 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-all duration-200"
           >
             <Trash2 className="w-4 h-4" />
-          </Button>
+          </Button>}
         </div>
       </CardContent>
     </Card>
