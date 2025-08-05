@@ -1,4 +1,4 @@
-export const BASE_URL: string = "http://localhost:8080"
+export const BASE_URL: string = "https://link-app-server-1070592419718.asia-south1.run.app"
 
 export const DEFAULT_TEMPLATES = [
     {

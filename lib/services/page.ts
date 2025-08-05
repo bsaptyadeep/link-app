@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from "axios";
 import { Page, PageBase, PageCreate } from "../../types/page";
 import { BASE_URL } from "@/constants/templates";
 import { v4 as uuidv4 } from 'uuid';
+import qs from 'qs'; 
 
 const path = "/api/page";
 
@@ -35,14 +36,20 @@ class PageService {
         }
     }
 
-    public async getPages(): Promise<Page []> {
+    public async getPages(pageIds?: number[]): Promise<Page[]> {
         try {
-            const res = await this.client.get<Page []>(`/`);
+            const res = await this.client.get<Page[]>("/", {
+                params: pageIds && pageIds.length > 0 ? { pageIds } : undefined,
+                paramsSerializer: {
+                    serialize: (params) => qs.stringify(params, { indices: false })
+                }
+            });
+
             res.data.forEach((page) => {
                 page.links.forEach((link) => {
                     link.id = uuidv4();
-                })
-            })
+                });
+            });
             return res.data;
         } catch (err: any) {
             this.handleError(err, `Failed to fetch the Pages`);
@@ -57,6 +64,17 @@ class PageService {
             this.handleError(err, `Failed to delete the page, with pageId: ${pageId}`);
         }
     }
+
+    public async updatePage(pageId: number, page: Partial<Page>): Promise<Page> {
+        try {
+            const links = page?.links?.map(({label, url}) => ({label, url}));
+            const res = await this.client.put<Page>(`/${pageId}/`, {...page, links});
+            return res.data;
+        } catch (err: any) {
+            this.handleError(err, `Failed to update Page with ID ${pageId}`);
+        }
+    }
+
 
     private handleError(error: any, message: string): never {
         if (axios.isAxiosError(error)) {

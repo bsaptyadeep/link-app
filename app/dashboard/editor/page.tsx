@@ -23,15 +23,18 @@ export default function EditorPage() {
   ])
   const searchParams = useSearchParams();
   const templateId = searchParams.get('templateId');
+  const pageId = searchParams.get('pageId');
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const [pageName, setPageName] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true);
   const [isPublishingPage, setIsPublishingPage] = useState<boolean>(false);
+  const [isSavingChanges, setIsSavingChanges] = useState<boolean>(false);
   const router = useRouter();
   const pathname = usePathname();
   const userService = UserService.getInstance();
+  const pageService = PageService.getInstance();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -43,10 +46,9 @@ export default function EditorPage() {
 
 
   useEffect(() => {
-    if (!templateId || typeof templateId !== "string") return;
-
     const fetchTemplate = async () => {
       try {
+        if (!templateId || typeof templateId !== "string") return;
         const selectedTemplate = DEFAULT_TEMPLATES.find(template => template.id === Number(templateId))
         if(selectedTemplate)
         setSelectedTemplate(selectedTemplate);
@@ -57,6 +59,20 @@ export default function EditorPage() {
       }
     };
 
+    const fetchPage = async () => {
+      if (!pageId || typeof pageId !== "string") return;
+      const pageList = await pageService.getPages([Number(pageId)]);
+      if (pageList.length > 0) {
+        const page = pageList[0];
+        setPageName(page.name);
+        setLinks(page.links.map(link => ({ id: uuidv4(), label: link.label, url: link.url })));
+        const selectedTemplate = DEFAULT_TEMPLATES.find(template => template.id === Number(page.templateId))
+        if(selectedTemplate)
+        setSelectedTemplate(selectedTemplate);
+      }
+    }
+
+    fetchPage()
     fetchTemplate();
   }, [pathname]);
 
@@ -74,6 +90,31 @@ export default function EditorPage() {
 
   const updateLink = (id: string, field: string, value: string) => {
     setLinks(links.map((link) => (link.id === id ? { ...link, [field]: value } : link)))
+  }
+
+  const handlePageChange = () => {
+    if(!selectedTemplate) return;
+    try {
+      setIsSavingChanges(true);
+      const updatedPage = {
+        templateId: selectedTemplate.id,
+        name: pageName,
+        description: "",
+        links
+      };
+      pageService.updatePage(Number(pageId), updatedPage);
+    } catch (err: any) {
+      setError(err.message || "An error occurred");
+    } finally {
+      setIsPublishingPage(false);
+    }
+    console.log("Page name changed:", {
+          templateId: selectedTemplate.id,
+          name: pageName,
+          description: "",
+          links
+        });
+    // setPageName(e.target.value);
   }
 
   const handlePublish = async () => {
@@ -103,9 +144,14 @@ export default function EditorPage() {
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Edit Your Page</h1>
         <div className="flex flex-row gap-3">
-          <Button onClick={handlePublish}>
-            Publish { isPublishingPage ? <Spinner />:  <ExternalLink className="ml-2 h-4 w-4" />}
-          </Button>
+          {pageId ?
+            <Button onClick={handlePageChange}>
+              Save Changes {isPublishingPage ? <Spinner /> : <ExternalLink className="ml-2 h-4 w-4" />}
+            </Button> :
+            <Button onClick={handlePublish}>
+              Publish {isPublishingPage ? <Spinner /> : <ExternalLink className="ml-2 h-4 w-4" />}
+            </Button>
+          }
         </div>
       </div>
 

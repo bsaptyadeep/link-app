@@ -54,6 +54,10 @@ export default function DashboardPage() {
     router.push(pageUrl)
   }
 
+  const handleEditPage = async (pageId: string) => {
+    router.push(`/dashboard/editor?pageId=${pageId}`);
+  }
+
   return (
     <div className="flex flex-col gap-8 p-6">
       <div>
@@ -68,7 +72,9 @@ export default function DashboardPage() {
         activePages.length>0 &&
         <div className="grid gap-6 md:grid-cols-3">
         {activePages.map((page) => (
-          <PageCard page={{
+          <PageCard
+          key={page.pageId}
+          page={{
             id: page.pageId.toString(),
             title: page.name,
             description: page.description,
@@ -78,6 +84,7 @@ export default function DashboardPage() {
           }}
           onDelete={handleDeletePage}
           onOpen={handleOpenPage}
+          onEdit={handleEditPage}
            />
         ))}
       </div>}
