@@ -31,7 +31,7 @@ const nextConfig = {
     return [
       {
         source: "/api/:path*", // Next.js API route
-        destination: "https://link-app-server-1070592419718.asia-south1.run.app/:path*" // Spring Boot backend
+        destination: "https://link-app-server-1070592419718.asia-south1.run.app/api/:path*" // Spring Boot backend
       }
     ]
   }
