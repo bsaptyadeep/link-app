@@ -1,5 +1,5 @@
-export const BASE_URL: string = "https://link-app-server-1070592419718.asia-south1.run.app"
-
+// export const BASE_URL: string = "https://link-app-server-1070592419718.asia-south1.run.app";
+export const BASE_URL = "/api";
 
 export const DEFAULT_TEMPLATES = [
     {
@@ -38,4 +38,4 @@ export const DEFAULT_TEMPLATES = [
             buttonStyle: "bg-white/90 backdrop-blur rounded-full shadow-md",
         },
     },
-]
+];

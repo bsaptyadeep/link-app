@@ -3,7 +3,7 @@ import { Page, PageBase, PageCreate } from "../../types/page";
 import { BASE_URL } from "@/constants/templates";
 import { v4 as uuidv4 } from 'uuid';
 
-const path = "/api/page";
+const path = "/page";
 
 class ViewPageService {
     private static instance: ViewPageService;

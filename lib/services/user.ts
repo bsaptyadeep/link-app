@@ -3,7 +3,7 @@ import { Template } from "../../types/template";
 import { BASE_URL } from "@/constants/templates";
 import { CreateUser, LoginUser, User } from "@/types/User";
 
-const path = "/api/user";
+const path = "/user";
 
 class UserService {
   private static instance: UserService;

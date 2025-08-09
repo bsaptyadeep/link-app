@@ -4,7 +4,7 @@ import { BASE_URL } from "@/constants/templates";
 import { v4 as uuidv4 } from 'uuid';
 import qs from 'qs'; 
 
-const path = "/api/page";
+const path = "/page";
 
 class PageService {
     private static instance: PageService;
