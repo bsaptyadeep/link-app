@@ -1,6 +1,9 @@
 export interface TemplateMetadata {
-  background: string;
-  buttonStyle: string;
+    background: React.CSSProperties
+    buttonStyle: React.CSSProperties
+    textColor: React.CSSProperties
+    bioColor: React.CSSProperties
+    profileRing: React.CSSProperties
 }
 
 export interface TemplateBase {

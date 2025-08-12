@@ -6,6 +6,7 @@ import ViewPageService from "../../../lib/services/viewPage";
 import { useParams } from "next/navigation";
 import { Template } from "@/types/template";
 import { DEFAULT_TEMPLATES } from "@/constants/templates";
+import { DevicePreview } from "@/app/dashboard/components/TemplatePreview/DevicePreview";
 
 const Page = () => {
     const { profileName, pageName } = useParams();
@@ -34,23 +35,16 @@ const Page = () => {
     }, [profileName, pageName])
 
     return (
-        <div className={`absolute inset-0 overflow-hidden ${currentTemplate?.metadata.background}`}>
-            <div className="flex h-full flex-col items-center overflow-y-auto p-4">
-                <div className="mt-6 h-20 w-20 rounded-full bg-white shadow-sm"></div>
-                <h3 className="mt-4 font-bold">John Doe</h3>
-                <p className="text-xs text-muted-foreground">Digital creator & web developer</p>
-
-                <div className="mt-6 w-full space-y-3">
-                    {pageData?.links.map((link) => (
-                        <div
-                            key={link.id}
-                            className={`flex w-full items-center justify-center p-2 ${currentTemplate?.metadata.buttonStyle}`}
-                        >
-                            {link.label || "New Link"}
-                        </div>
-                    ))}
-                </div>
-            </div>
+        <div className="h-[100vh]">
+        {
+            (currentTemplate && pageData) ?
+            <DevicePreview
+            template={currentTemplate}
+            links={pageData?.links || []}
+            userName={String(profileName)||""}
+            pageName={pageData?.name || ""}
+            previewType="desktop"
+        />: <></>}
         </div>
     );
 };

@@ -15,6 +15,7 @@ import { DEFAULT_TEMPLATES } from '@/constants/templates';
 import { Spinner } from "@radix-ui/themes";
 import UserService from '@/lib/services/user';
 import { User } from '@/types/User';
+import { DevicePreview } from '../components/TemplatePreview/DevicePreview';
 
 export default function EditorPage() {
   const [links, setLinks] = useState<IPageLink []>([
@@ -207,26 +208,10 @@ export default function EditorPage() {
             <h2 className="mb-2 font-semibold">Preview</h2>
             {
               selectedTemplate &&
-              <div className="relative mx-auto h-[500px] w-[250px] overflow-hidden rounded-[32px] border-8 border-muted bg-background p-2">
-                <div className={`absolute inset-0 rounded-[24px] overflow-hidden ${selectedTemplate.metadata.background}`}>
-                  <div className="flex h-full flex-col items-center overflow-y-auto p-4">
-                    <div className="mt-6 h-20 w-20 rounded-full bg-white shadow-sm"></div>
-                    <h3 className="mt-4 font-bold">John Doe</h3>
-                    <p className="text-xs text-muted-foreground">Digital creator & web developer</p>
-
-                    <div className="mt-6 w-full space-y-3">
-                      {links.map((link) => (
-                        <div
-                          key={link.id}
-                          className={`flex w-full items-center justify-center p-2 ${selectedTemplate.metadata.buttonStyle}`}
-                        >
-                          {link.label || "New Link"}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>}
+              <div className="relative mx-auto h-[500px] w-[250px] overflow-hidden rounded-[32px] border-8 border-muted bg-background">
+                <DevicePreview pageName={pageName} userName={user?.profileName || ""} links={links} template={selectedTemplate} previewType="mobile" />
+              </div>
+              }
           </div>
         </div>
       </div>
