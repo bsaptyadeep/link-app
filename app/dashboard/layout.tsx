@@ -15,7 +15,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import LogoImage from "@/public/icons/zustbio.jpg";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
@@ -58,8 +59,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 className="flex items-center gap-2 text-lg font-semibold"
                 onClick={() => setIsMobileNavOpen(false)}
               >
-                <span className="bg-primary text-primary-foreground p-1 rounded-md">Link</span>
-                <span>Hub</span>
+                <img src={LogoImage.src} className="h-8" alt="logo" loading='lazy' />
               </Link>
               <div className="my-4 h-px bg-muted" />
               {navigation.map((item) => (
@@ -79,53 +79,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </SheetContent>
         </Sheet>
         <Link href="/dashboard" className="flex items-center gap-2 font-semibold">
-          <span className="bg-primary text-primary-foreground p-1 rounded-md">Link</span>
-          <span>Hub</span>
+          <img src={LogoImage.src} className="h-8" alt="logo" loading='lazy' />
         </Link>
-        <div className="ml-auto flex items-center gap-2">
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/johndoe" target="_blank">
-              Preview
-            </Link>
-          </Button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <div className="relative h-8 w-8 rounded-full bg-muted">
-                  <span className="absolute inset-0 flex items-center justify-center text-sm font-medium">JD</span>
-                </div>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <div className="flex items-center justify-start gap-2 p-2">
-                <div className="flex flex-col space-y-1 leading-none">
-                  <p className="font-medium">John Doe</p>
-                  <p className="text-xs text-muted-foreground">john@example.com</p>
-                </div>
-              </div>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/dashboard/settings">
-                  <Settings className="mr-2 h-4 w-4" />
-                  <span>Settings</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/johndoe" target="_blank">
-                  <User className="mr-2 h-4 w-4" />
-                  <span>View profile</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
       </header>
       <div className="flex flex-1">
         <aside className="hidden w-64 border-r bg-muted/20 md:block">

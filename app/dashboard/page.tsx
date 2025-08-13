@@ -61,8 +61,7 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-8 p-6">
       <div>
-        <h1 className="text-3xl font-bold">Welcome, John!</h1>
-        <p className="text-muted-foreground">Manage your LinkHub profile and Active Pages</p>
+        <p className="text-muted-foreground">Manage your profile and Active Pages</p>
       </div>
       {
         isLoading &&
