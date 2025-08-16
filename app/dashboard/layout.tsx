@@ -24,7 +24,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const navigation = [
     { name: "Home", href: "/dashboard", icon: House, current: pathname === "/dashboard"},
-    { name: "Editor", href: "/dashboard/editor", icon: Brush, current: pathname === "/dashboard/editor" },
     {
       name: "Templates",
       href: "/dashboard/temp",
@@ -67,7 +66,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   href={item.href}
                   className={`flex items-center gap-2 rounded-lg px-3 py-2 ${
                     item.current ? "bg-muted" : "hover:bg-muted"
-                  } pointer-events-none opacity-50`}
+                  }`}
                   onClick={() => setIsMobileNavOpen(false)}
                 >
                   <item.icon className="h-5 w-5" />
@@ -90,7 +89,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 href={item.href}
                 className={`flex items-center gap-2 rounded-lg px-3 py-2 ${
                   item.current ? "bg-muted" : "hover:bg-muted"
-                } pointer-events-none opacity-50`}
+                }`}
               >
                 <item.icon className="h-5 w-5" />
                 {item.name}

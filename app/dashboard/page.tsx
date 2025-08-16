@@ -84,10 +84,12 @@ export default function DashboardPage() {
 
   if (isLoading) return <Loader text="Fetching data..." />;
 
+  console.log("testing::profilePage", profilePage);
+
   return (
     <div className="flex flex-col gap-8 p-6">
       {
-        profilePage === null ?
+        !profilePage ?
           <Card className="mb-8 border-0 bg-gradient-to-br from-violet-600 via-purple-700 to-indigo-600 text-white relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-black/5 to-black/10"></div>
             <CardContent className="relative p-8">
