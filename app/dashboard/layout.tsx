@@ -5,7 +5,7 @@ import type React from "react"
 import { Suspense, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { House, BarChart3, Brush, LayoutTemplate, LogOut, Menu, Settings, User } from "lucide-react"
+import { House, User2Icon, Brush, LayoutTemplate, BarChart3, LogOut, Menu, Settings, User } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -32,11 +32,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       current: pathname === "/dashboard/temp",
     },
     {
-      name: "Analytics",
-      href: "/dashboard/analytics",
-      icon: BarChart3,
-      current: pathname === "/dashboard/analytics",
-      disabled: true,
+      name: "My Profile",
+      href: "/dashboard/profile",
+      icon: User2Icon,
+      current: pathname === "/dashboard/profile",
     },
   ]
 
@@ -65,10 +64,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {navigation.map((item) => (
                 <Link
                   key={item.name}
-                  href={item.disabled ? "#" : item.href}
+                  href={item.href}
                   className={`flex items-center gap-2 rounded-lg px-3 py-2 ${
                     item.current ? "bg-muted" : "hover:bg-muted"
-                  } ${item.disabled ? "pointer-events-none opacity-50" : ""}`}
+                  } pointer-events-none opacity-50`}
                   onClick={() => setIsMobileNavOpen(false)}
                 >
                   <item.icon className="h-5 w-5" />
@@ -88,10 +87,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {navigation.map((item) => (
               <Link
                 key={item.name}
-                href={item.disabled ? "#" : item.href}
+                href={item.href}
                 className={`flex items-center gap-2 rounded-lg px-3 py-2 ${
                   item.current ? "bg-muted" : "hover:bg-muted"
-                } ${item.disabled ? "pointer-events-none opacity-50" : ""}`}
+                } pointer-events-none opacity-50`}
               >
                 <item.icon className="h-5 w-5" />
                 {item.name}

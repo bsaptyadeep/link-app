@@ -2,17 +2,19 @@
 
 import { User } from "lucide-react"
 import type { Template } from "@/types/template"
-import { IPageLink } from "@/types/page"
+import { IPageLink, IPageSocial } from "@/types/page"
+import SocialMediaIcons from "@/app/components/SocialMediaLinks/SocialMediaLinks"
 
 interface DevicePreviewProps {
   template: Template
   previewType?: "mobile" | "desktop",
   links: IPageLink[],
+  socials?: IPageSocial [],
   userName: string,
   pageName: string
 }
 
-export function DevicePreview({ template, previewType, links, userName, pageName }: DevicePreviewProps) {
+export function DevicePreview({ template, previewType, links, userName, pageName, socials }: DevicePreviewProps) {
 
   const handleOpenLink = (url: string) => {
     if(previewType==="mobile") {
@@ -56,6 +58,13 @@ export function DevicePreview({ template, previewType, links, userName, pageName
                     </div>
                 ))
             }
+        </div>
+        <div className="mt-5">
+          {
+          socials && socials.length > 0 && (
+            <SocialMediaIcons socials={socials} />  
+          )
+        }
         </div>
       </div>
     </div>

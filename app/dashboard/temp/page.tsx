@@ -9,13 +9,25 @@ import { Template } from "@/types/template";
 import Loader from "@/components/ui/Loader";
 import { DEFAULT_TEMPLATES } from "@/constants/templates";
 import { TemplatePreview } from "../components/TemplatePreview/TemplatePreview";
+import { useRouter, useSearchParams } from "next/navigation";
 
 
 export default function TemplatesPage() {
+    const router = useRouter();
     const [selectedTemplate, setSelectedTemplate] = useState<number>(1);
     const [templates, setTemplates] = useState<Template[]>([...DEFAULT_TEMPLATES]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
+    const searchParams = useSearchParams();
+    const pagetype = searchParams.get('pagetype');
+
+    const handleApplyTemplate = () => {
+        if(pagetype === "profile") {
+            router.push(`/dashboard/profile?templateId=${selectedTemplate}`);
+        } else {
+            router.push(`/dashboard/editor?templateId=${selectedTemplate}`);
+        }
+    }
 
     if (loading) return <Loader text="Fetching templates..." />;
     if (error) return <div className="text-red-500">Error: {error}</div>;
@@ -43,10 +55,8 @@ export default function TemplatesPage() {
             </Tabs>
 
             <div className="flex justify-end">
-                <Button>
-                    <Link href={`/dashboard/editor?templateId=${selectedTemplate}`}>
-                        Apply template
-                    </Link>
+                <Button onClick={handleApplyTemplate}>
+                    Apply template
                 </Button>
             </div>
         </div>

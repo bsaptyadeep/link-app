@@ -4,6 +4,12 @@ export type IPageLink = {
   url: string
 }
 
+export type IPageSocial = {
+  id: string
+  platform: string,
+  url: string
+}
+
 export type PageBase = PageCreate & {
   userId: string
 }
@@ -16,5 +22,21 @@ export type PageCreate = {
 }
 
 export type Page = PageBase & {
+  pageId: number
+}
+
+export type ProfilePageCreate = {
+  handle: string,
+  bio: string,
+  templateId: number,
+  links: IPageLink[]
+  socials: IPageSocial[]
+}
+
+export type ProfilePageBase = ProfilePageCreate & {
+  userId: string
+}
+
+export type ProfilePage = ProfilePageBase & {
   pageId: number
 }

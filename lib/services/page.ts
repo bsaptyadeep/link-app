@@ -14,7 +14,7 @@ class PageService {
         this.client = axios.create({
             baseURL: `${BASE_URL}${path}`,
             withCredentials: true,
-            timeout: 10000,
+            // timeout: 10000,
             headers: { "Content-Type": "application/json" },
         });
     }
