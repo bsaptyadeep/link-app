@@ -42,6 +42,7 @@ export default function MyProfilePage() {
     const pathname = usePathname();
     const userService = UserService.getInstance();
     const profilePageService = ProfilePageService.getInstance();
+    const [isProfilePageExists, setIsProfilePageExists] = useState<boolean>(false); 
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -64,6 +65,7 @@ export default function MyProfilePage() {
             const profilePage = await profilePageService.getProfilePage();
             if (profilePage) {
                 setProfilePageData(profilePage)
+                setIsProfilePageExists(true);
                 const selectedTemplate = DEFAULT_TEMPLATES.find(template => template.id === Number(profilePage.templateId))
                 if (selectedTemplate)
                     setSelectedTemplate(selectedTemplate);
@@ -141,7 +143,7 @@ export default function MyProfilePage() {
             <div className="mb-6 flex items-center justify-between">
                 <h1 className="text-2xl font-bold">My Profile</h1>
                 <div className="flex flex-row gap-3">
-                    {profilePageData.handle ?
+                    {isProfilePageExists ?
                         <Button onClick={handlePageChange}>
                             Save Changes {isPublishingPage ? <Spinner /> : <ExternalLink className="ml-2 h-4 w-4" />}
                         </Button> :
