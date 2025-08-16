@@ -84,7 +84,6 @@ export default function DashboardPage() {
 
   if (isLoading) return <Loader text="Fetching data..." />;
 
-  console.log("testing::profilePage", profilePage);
 
   return (
     <div className="flex flex-col gap-8 p-6">

@@ -117,7 +117,6 @@ export default function MyProfilePage() {
     }
 
     const handlePublish = async () => {
-        console.log("testing::profilePageData", profilePageData)
         try {
             setIsPublishingPage(true);
             if (selectedTemplate?.id) {
