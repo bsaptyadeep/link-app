@@ -14,25 +14,27 @@ import { ProfilePageCreate } from "@/types/page"
 
 interface IProps {
   profilePageData: ProfilePageCreate,
-  setProfilePageData: React.Dispatch<React.SetStateAction<ProfilePageCreate>>
+  setProfilePageData: React.Dispatch<React.SetStateAction<ProfilePageCreate>>,
+  setProfileImageFile: React.Dispatch<React.SetStateAction<File | null>>
 }
 
-export default function ProfileInfoManager({ profilePageData, setProfilePageData }: IProps) {
+export default function ProfileInfoManager({ profilePageData, setProfilePageData, setProfileImageFile }: IProps) {
   const [isEditing, setIsEditing] = useState(false)
 
-  // const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = event.target.files?.[0]
-  //   if (file) {
-  //     const reader = new FileReader()
-  //     reader.onload = (e) => {
-  //       setProfileData((prev) => ({
-  //         ...prev,
-  //         profileImage: e.target?.result as string,
-  //       }))
-  //     }
-  //     reader.readAsDataURL(file)
-  //   }
-  // }
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setProfilePageData((prev) => ({
+          ...prev,
+          localprofileImage: e.target?.result as string,
+        }))
+      }
+      setProfileImageFile(file);
+      reader.readAsDataURL(file)
+    }
+  }
 
   const handleSave = () => {
     setIsEditing(false)
@@ -60,12 +62,12 @@ export default function ProfileInfoManager({ profilePageData, setProfilePageData
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Profile Picture Section */}
-        {/* <div className="flex items-center gap-6">
+        <div className="flex items-center gap-6">
           <div className="relative">
             <Avatar className="w-20 h-20 border-4 border-violet-100">
-              <AvatarImage src={profileData.profileImage || "/placeholder.svg"} alt="Profile" />
+              <AvatarImage src={ profilePageData?.localprofileImage || profilePageData?.signedProfilePictureUrl || "/placeholder.svg"} alt="Profile" />
               <AvatarFallback className="bg-violet-100 text-violet-600 text-xl font-semibold">
-                {profileData.handle.charAt(0).toUpperCase()}
+                {profilePageData?.handle.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
             {isEditing && (
@@ -86,7 +88,7 @@ export default function ProfileInfoManager({ profilePageData, setProfilePageData
               </label>
             )}
           </div>
-        </div> */}
+        </div>
 
         {/* Handle/Username Section */}
         <div className="space-y-2">

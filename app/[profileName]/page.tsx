@@ -45,6 +45,7 @@ const ProfilePageComponent = () => {
             pageName={String(profilePageData?.bio) || ""}
             previewType="desktop"
             socials={profilePageData?.socials || []}
+            signedProfilePictureUrl={profilePageData?.signedProfilePictureUrl || ''}
           /> : <></>}
     </div>
   )

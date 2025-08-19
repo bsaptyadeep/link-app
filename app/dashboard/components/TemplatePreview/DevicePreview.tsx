@@ -11,10 +11,11 @@ interface DevicePreviewProps {
   links: IPageLink[],
   socials?: IPageSocial [],
   userName: string,
-  pageName: string
+  pageName: string,
+  signedProfilePictureUrl?: string
 }
 
-export function DevicePreview({ template, previewType, links, userName, pageName, socials }: DevicePreviewProps) {
+export function DevicePreview({ template, previewType, links, userName, pageName, socials, signedProfilePictureUrl }: DevicePreviewProps) {
 
   const handleOpenLink = (url: string) => {
     if(previewType==="mobile") {
@@ -28,13 +29,17 @@ export function DevicePreview({ template, previewType, links, userName, pageName
       className={`relative h-full rounded-xl`}
     >
       {/* Preview Container */}
-      <div className={`h-full pt-10 w-full  flex flex-col items-center`} style={template.metadata.background}>
+      <div className={`h-full pt-10 w-full  flex flex-col gap-3 items-center`} style={template.metadata.background}>
         {/* Mini Profile */}
         <div
           className={`${previewType === "mobile"? "h-12 w-12": "h-40 w-40"} bg-white/90 flex items-center justify-center mb-2`}
           style={template.metadata.profileRing}
         >
-          <User className={`${previewType === "mobile"? "h-6 w-6": "h-20 w-20"} text-gray-400`} />
+          {signedProfilePictureUrl ? (
+            <img src={signedProfilePictureUrl} alt={userName} className="object-cover rounded-full" />
+          ) : (
+            <User className={`${previewType === "mobile"? "h-6 w-6": "h-20 w-20"} text-gray-400`} />
+          )}
         </div>
 
         <h3 className={`${previewType === "mobile" ? "text-sm": "text-lg"} font-bold mb-1`} style={template.metadata.textColor}>

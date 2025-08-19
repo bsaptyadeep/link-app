@@ -26,14 +26,37 @@ export class ProfilePageService {
         return ProfilePageService.instance;
     }
 
-    public async createProfilePage(page: ProfilePageCreate): Promise<Page> {
+    public async createProfilePage(page: ProfilePageCreate, profileImageFile: File | null): Promise<any> {
         try {
-            const links = page.links.map(({ label, url }) => ({ label, url })); // removed id from label to create in server
-            const socials = page.socials.map(({ platform, url }) => ({ platform, url }));
-            const res = await this.client.post<Page>("/", { ...page, links, socials });
+            const formData = new FormData();
+
+            // 1. Prepare the JSON data for the 'profilePage' part
+            const pageData = {
+                ...page,
+                links: page.links.map(({ label, url }) => ({ label, url })),
+                socials: page.socials.map(({ platform, url }) => ({ platform, url })),
+                profileImageFileName: profileImageFile?.name || null
+            };
+
+            // Append the JSON data as a Blob with the correct content type
+            const profilePageBlob = new Blob([JSON.stringify(pageData)], { type: 'application/json' });
+            formData.append("profilePage", profilePageBlob);
+
+            // 2. Append the image file if it exists
+            if (profileImageFile) {
+                formData.append("profileImageFile", profileImageFile);
+            }
+
+            // 3. Send the multipart/form-data request
+            const res = await this.client.post<ProfilePage>("/", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
             return res.data;
         } catch (err: any) {
-            this.handleError(err, `Failed to create Page: ${page}`);
+            this.handleError(err, `Failed to create Profile Page: ${page}`);
         }
     }
 
@@ -52,14 +75,51 @@ export class ProfilePageService {
         }
     }
 
-    public async updateProfilePage(profilePage: Partial<ProfilePage>): Promise<ProfilePage> {
+    public async updateProfilePage(profilePage: Partial<ProfilePage>, profileImageFile: File | null): Promise<ProfilePage> {
         try {
-            const links = profilePage?.links?.map(({label, url}) => ({label, url}));
-            const socials = profilePage?.socials?.map(({platform, url}) => ({platform, url}));
-            const res = await this.client.put<ProfilePage>(`/`, {...profilePage, links, socials});
+            const formData = new FormData();
+
+            // 1. Prepare the JSON data for the 'profilePage' part
+            const pageData = {
+                ...profilePage,
+                links: profilePage?.links?.map(({ label, url }) => ({ label, url })),
+                socials: profilePage?.socials?.map(({ platform, url }) => ({ platform, url })),
+                profileImageFileName: profileImageFile?.name || null
+            };
+
+            // Append the JSON data as a Blob with the correct content type
+            const profilePageBlob = new Blob([JSON.stringify(pageData)], { type: 'application/json' });
+            formData.append("profilePage", profilePageBlob);
+
+            // 2. Append the image file if it exists
+            if (profileImageFile) {
+                formData.append("profileImageFile", profileImageFile);
+            }
+
+            // 3. Send the multipart/form-data request
+            const res = await this.client.put<ProfilePage>("/", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
             return res.data;
         } catch (err: any) {
-            this.handleError(err, `Failed to update Page with ID ${profilePage?.pageId}`);
+            this.handleError(err, `Failed to update Profile Page with ID ${profilePage?.pageId}`);
+        }
+    }
+
+    public async uploadProfileImage(file: File): Promise<string> {
+        try {
+            const formData = new FormData();
+            formData.append("profilePicture", file);
+            const res = await this.client.post<string>(`/profile-pic/`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                }
+            });
+            return res.data;
+        } catch (err: any) {
+            this.handleError(err, `Failed to upload profile image`);
         }
     }
 

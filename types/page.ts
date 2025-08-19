@@ -30,7 +30,10 @@ export type ProfilePageCreate = {
   bio: string,
   templateId: number,
   links: IPageLink[]
-  socials: IPageSocial[]
+  socials: IPageSocial[],
+  localprofileImage?: string,
+  profileImageFileName?: string
+  signedProfilePictureUrl?: string
 }
 
 export type ProfilePageBase = ProfilePageCreate & {
@@ -38,5 +41,5 @@ export type ProfilePageBase = ProfilePageCreate & {
 }
 
 export type ProfilePage = ProfilePageBase & {
-  pageId: number
+  pageId: number,
 }

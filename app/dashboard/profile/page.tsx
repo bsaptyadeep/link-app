@@ -34,7 +34,6 @@ export default function MyProfilePage() {
         socials: []
     });
     const [error, setError] = useState<string | null>(null);
-    const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState(true);
     const [isPublishingPage, setIsPublishingPage] = useState<boolean>(false);
     const [isSavingChanges, setIsSavingChanges] = useState<boolean>(false);
@@ -42,14 +41,10 @@ export default function MyProfilePage() {
     const pathname = usePathname();
     const userService = UserService.getInstance();
     const profilePageService = ProfilePageService.getInstance();
-    const [isProfilePageExists, setIsProfilePageExists] = useState<boolean>(false); 
+    const [isProfilePageExists, setIsProfilePageExists] = useState<boolean>(false);
+    const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
 
     useEffect(() => {
-        const fetchUser = async () => {
-            const response = await userService.getUser();
-            setUser(response);
-        }
-
         const fetchTemplate = async () => {
             try {
                 if (!templateId || typeof templateId !== "string") return;
@@ -73,7 +68,7 @@ export default function MyProfilePage() {
         }
 
         const handleLoad = async () => {
-            await Promise.all([fetchUser(), fetchProfilePage(), fetchTemplate()]);
+            await Promise.all([fetchProfilePage(), fetchTemplate()]);
             setLoading(false);
         };
 
@@ -105,15 +100,15 @@ export default function MyProfilePage() {
         }))
     }
 
-    const handlePageChange = () => {
+    const handlePageChange = async () => {
         if (!selectedTemplate) return;
         try {
             setIsSavingChanges(true);
-            profilePageService.updateProfilePage(profilePageData);
+            await profilePageService.updateProfilePage(profilePageData, profileImageFile);
         } catch (err: any) {
             setError(err.message || "An error occurred");
         } finally {
-            setIsPublishingPage(false);
+            setIsSavingChanges(false);
         }
         console.log("Page name changed:", profilePageData);
     }
@@ -125,7 +120,7 @@ export default function MyProfilePage() {
                 const newPage = await profilePageService.createProfilePage({
                     ...profilePageData,
                     templateId: selectedTemplate.id
-                });
+                }, profileImageFile);
                 const pageId = newPage.pageId;
                 if (pageId) {
                     router.push(`/${profilePageData.handle}`);
@@ -144,10 +139,10 @@ export default function MyProfilePage() {
                 <h1 className="text-2xl font-bold">My Profile</h1>
                 <div className="flex flex-row gap-3">
                     {isProfilePageExists ?
-                        <Button onClick={handlePageChange}>
-                            Save Changes {isPublishingPage ? <Spinner /> : <ExternalLink className="ml-2 h-4 w-4" />}
+                        <Button disabled = {isSavingChanges} onClick={handlePageChange}>
+                            Save Changes {isSavingChanges ? <Spinner /> : <ExternalLink className="ml-2 h-4 w-4" />}
                         </Button> :
-                        <Button onClick={handlePublish}>
+                        <Button disabled = {isPublishingPage} onClick={handlePublish}>
                             Publish {isPublishingPage ? <Spinner /> : <ExternalLink className="ml-2 h-4 w-4" />}
                         </Button>
                     }
@@ -163,7 +158,7 @@ export default function MyProfilePage() {
                             <TabsTrigger value="socials">Socials</TabsTrigger>
                         </TabsList>
                         <TabsContent value="details" className="space-y-4 pt-4">
-                            <ProfileInfoManager profilePageData={profilePageData} setProfilePageData={setProfilePageData} />
+                            <ProfileInfoManager profilePageData={profilePageData} setProfilePageData={setProfilePageData} setProfileImageFile={setProfileImageFile} />
                         </TabsContent>
                         <TabsContent value="links" className="space-y-4 pt-4">
                             <div className="space-y-4">
@@ -208,7 +203,7 @@ export default function MyProfilePage() {
                         {
                             selectedTemplate &&
                             <div className="relative mx-auto h-[500px] w-[250px] overflow-hidden rounded-[32px] border-8 border-muted bg-background">
-                                <DevicePreview pageName={profilePageData?.bio || ""} userName={profilePageData?.handle || ""} links={profilePageData?.links || []} template={selectedTemplate} previewType="mobile" />
+                                <DevicePreview signedProfilePictureUrl={ profilePageData?.localprofileImage ||profilePageData?.signedProfilePictureUrl || ""} pageName={profilePageData?.bio || ""} userName={profilePageData?.handle || ""} links={profilePageData?.links || []} template={selectedTemplate} previewType="mobile" />
                             </div>
                         }
                     </div>
