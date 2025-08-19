@@ -57,13 +57,16 @@ export default function MyProfilePage() {
         };
 
         const fetchProfilePage = async () => {
-            const profilePage = await profilePageService.getProfilePage();
-            if (profilePage) {
-                setProfilePageData(profilePage)
-                setIsProfilePageExists(true);
-                const selectedTemplate = DEFAULT_TEMPLATES.find(template => template.id === Number(profilePage.templateId))
-                if (selectedTemplate)
-                    setSelectedTemplate(selectedTemplate);
+            try {
+                const profilePage = await profilePageService.getProfilePage();
+                if (profilePage) {
+                    setProfilePageData(profilePage)
+                    setIsProfilePageExists(true);
+                    const selectedTemplate = DEFAULT_TEMPLATES.find(template => template.id === Number(profilePage.templateId))
+                    if (selectedTemplate)
+                        setSelectedTemplate(selectedTemplate);
+                }
+            } catch (err: any) {
             }
         }
 
