@@ -44,12 +44,14 @@ class UserService {
 
   public async loginUser(payload: LoginUser): Promise<any> {
     try {
-        const res = await this.client.post("/login", payload);
-        return res.data;
+        await this.client.post("/login", payload);
+        return;
     } catch (err: any) {
         this.handleError(err, `Failed to login User`);
     }
   }
+
+
 
   private handleError(error: any, message: string): never {
     if (axios.isAxiosError(error)) {

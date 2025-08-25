@@ -53,7 +53,9 @@ export default function LoginPage() {
       };
       await UserServiceInstance.loginUser(registerUserPayload);
       setSuccess("Log in successful!");
-      router.push("/dashboard");
+      // router.push("/dashboard");
+      window.location.href = "/dashboard";
+
       console.log("Redirecting to dashboard...");
     } catch (err) {
       setError("Email/password invalid. Please try again.");
