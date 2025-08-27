@@ -156,31 +156,6 @@ export default function DashboardPage() {
           ))}
         </div>}
       <div className="grid gap-6 md:grid-cols-2">
-        {/* <Card
-          className={`group hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 bg-white/80 backdrop-blur-sm border-0 shadow-lg overflow-hidden`}
-        >
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Brush className="h-5 w-5" />
-              Edit Your Profile
-            </CardTitle>
-            <CardDescription>Customize your profile and add links</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Update your profile information, add new links, and customize your page appearance.
-            </p>
-          </CardContent>
-          <CardFooter>
-            <Button
-            className="gap-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 shadow-lg hover:shadow-xl transition-all duration-200"
-             asChild>
-              <Link href="/dashboard/editor">
-                Go to Editor <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </CardFooter>
-        </Card> */}
         <Card
           className={`group hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 bg-white/80 backdrop-blur-sm border-0 shadow-lg overflow-hidden`}
         >

@@ -97,7 +97,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             ))}
           </nav>
         </aside>
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 w-full">{children}</main>
       </div>
     </div>
     </Suspense>

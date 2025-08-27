@@ -3,7 +3,6 @@
 import type React from "react";
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -19,29 +18,30 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { isValidEmail } from "@/lib/email.util";
 import UserService from "../../lib/services/user";
+import { set } from "react-hook-form";
+import { AlertBox } from "@/components/ui/alert-box";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
+  const [loginError, setLoginError] = useState<string>("");
   const [success, setSuccess] = useState<string>("")
   const UserServiceInstance = UserService.getInstance();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setLoginError("");
 
     if (!email || !password) {
-      setError("Please enter both email and password.");
+      setLoginError("Please enter both email and password.");
       return;
     }
 
     const validateEmail = isValidEmail(email);
 
     if(!validateEmail) {
-      setError("Please enter a valid email address.");
+      setLoginError("Please enter a valid email address.");
       return;
     }
 
@@ -53,13 +53,9 @@ export default function LoginPage() {
       };
       await UserServiceInstance.loginUser(registerUserPayload);
       setSuccess("Log in successful!");
-      // router.push("/dashboard");
       window.location.href = "/dashboard";
-
-      console.log("Redirecting to dashboard...");
     } catch (err) {
-      setError("Email/password invalid. Please try again.");
-      setIsLoading(false);
+      setLoginError((err as Error).message || "Login failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -80,13 +76,9 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
-            {error && (
-              <div className="text-sm text-red-500">{error}</div>
+            {loginError && (
+              <AlertBox variant="error" description={loginError} hideLabel />
             )}
-             {success && (
-              <div className="text-sm text-green-600">{success}</div>
-            )}
-
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -102,9 +94,9 @@ export default function LoginPage() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Password</Label>
-                <Link href="#" className="text-xs text-primary hover:underline">
+                {/* <Link href="#" className="text-xs text-primary hover:underline">
                   Forgot password?
-                </Link>
+                </Link> */}
               </div>
               <Input
                 id="password"

@@ -29,7 +29,7 @@ class UserService {
         const res = await this.client.post("/register", payload);
         return res.data;
     } catch (err: any) {
-        this.handleError(err, `Failed to register User`);
+        this.handleError(err, `Registration failed`);
     }
   }
 
@@ -38,7 +38,7 @@ class UserService {
       const res = await this.client.get<User>("/");
       return res.data;
     } catch (err: any) {
-      this.handleError(err, "Failed to fetch user details");
+      this.handleError(err, `Fetch User failed`);
     }
   }
 
@@ -47,15 +47,26 @@ class UserService {
         await this.client.post("/login", payload);
         return;
     } catch (err: any) {
-        this.handleError(err, `Failed to login User`);
+        this.handleError(err, `Login Failed`);
     }
   }
 
-
+  public async checkProfileNameAvailable(profileName: string): Promise<boolean> {
+    try {
+      const res = await this.client.get<{ isAvailable: boolean }>(`/profile/check/${profileName}/`);
+      return res.data.isAvailable;
+    } catch (err: any) {
+      this.handleError(err, `profileName ${profileName} check failed`);
+    }
+  }
 
   private handleError(error: any, message: string): never {
     if (axios.isAxiosError(error)) {
-      throw new Error(`${message}: ${error.response?.data?.detail || error.message}`);
+      if(error.response?.status === 409) {
+        throw new Error(`${error.response?.data?.message || error.message}`);
+      }
+      console.log(error);
+      throw new Error(`${message}: ${error.response?.data?.message || error.message}`);
     }
     throw new Error(`${message}: ${error}`);
   }

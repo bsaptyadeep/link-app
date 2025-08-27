@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";;
@@ -19,6 +19,8 @@ import { Label } from "@/components/ui/label";
 import UserService from "../../../lib/services/user";
 import { isValidEmail } from "@/lib/email.util";
 import { useSearchParams } from 'next/navigation'
+import { AlertBox } from "@/components/ui/alert-box";
+import WelcomeScreen from "./WelcomeScreen";
 
 export default function SignupForm() {
   const router = useRouter();
@@ -28,27 +30,33 @@ export default function SignupForm() {
   const [username, setUsername] = useState<string>(profileName || "");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);;
+  const [registerError, setRegisterError] = useState<string | null>(null);
+  const [isRegistrationSuccess, setIsRegistrationSuccess] = useState(false);
   const UserServiceInstance = UserService.getInstance();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setSuccess(null);
+    setRegisterError(null);
 
     if (!username || !email || !password) {
-      setError("All fields are required.");
+      setRegisterError("All fields are required.");
       return;
     }
 
     if (!isValidEmail(email)) {
-      setError("Please enter a valid email address.");
+      setRegisterError("Please enter a valid email address.");
       return;
     }
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters long.");
+      setRegisterError("Password must be at least 6 characters long.");
+      return;
+    }
+
+    // Check if profile name is available
+    const isProfileNameAvailable = await UserServiceInstance.checkProfileNameAvailable(username);
+    if (!isProfileNameAvailable) {
+      setRegisterError("Profile name is already taken.");
       return;
     }
 
@@ -60,14 +68,28 @@ export default function SignupForm() {
         password
       };
       await UserServiceInstance.registerUser(registerUserPayload);
-      setSuccess("Account created successfully!");
-      router.push("/dashboard");
+      setIsRegistrationSuccess(true);
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 5000);
+
     } catch (err) {
-      setError("Something went wrong. Please try again.");
-      setIsLoading(false);
+      setRegisterError((err as Error).message || "Registration failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
+  }
+
+  useEffect(() => {
+    if (registerError) {
+      setTimeout(() => {
+        setRegisterError(null);
+      }, 20000);
+    }
+  }, [registerError])
+
+  if(isRegistrationSuccess) {
+    return <WelcomeScreen />
   }
 
   return (
@@ -87,11 +109,8 @@ export default function SignupForm() {
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
-              {error && (
-                <div className="text-sm text-red-500">{error}</div>
-              )}
-              {success && (
-                <div className="text-sm text-green-600">{success}</div>
+              {registerError && (
+                <AlertBox variant="error" description={registerError} hideLabel />
               )}
               <div className="space-y-2">
                 <Label htmlFor="username">Username</Label>

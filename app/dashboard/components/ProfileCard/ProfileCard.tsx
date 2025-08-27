@@ -76,8 +76,7 @@ export default function ProfileUrlCard({ handle }: ProfileUrlCardProps) {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex items-center gap-3">
-
+                <div className="flex items-center gap-3 flex-wrap">
                     <>
                         <Button
                             onClick={handleCopy}
